@@ -1,0 +1,27 @@
+[project]
+name = "ai-infosec-dic2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "t14891", email = "t14891@ms3.sltung.com.tw" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=7.4.0",
+    "kaggle>=2.2.4",
+    "matplotlib>=3.11.2",
+    "nbclient>=0.11.0",
+    "numpy>=2.5.4",
+    "pandas>=3.0.6",
+    "scikit-learn>=1.9.1",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.15.0",
+]
+
+[project.scripts]
+ai-infosec-dic2 = "ai_infosec_dic2:main"
+
+[build-system]
+requires = ["uv_build>=0.12.18,<0.13.0"]
+build-backend = "uv_build"
