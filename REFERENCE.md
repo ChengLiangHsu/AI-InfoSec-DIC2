@@ -1,3 +1,4 @@
 - [50-startups-LinearRegression](https://www.kaggle.com/code/akash17/50-startups-linearregression)
 - [iLearning](https://lms2020.nchu.edu.tw/)
 - [Python：每次呼叫都擷取迭代器下一個元素](https://docs.python.org/3/builtins/functions.html#next)
+- [Boston Housing with Linear Regression](https://www.kaggle.com/code/henriqueyamahata/boston-housing-with-linear-regression/notebook)
