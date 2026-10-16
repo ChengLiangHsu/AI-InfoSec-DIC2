@@ -2,3 +2,4 @@
 - [iLearning](https://lms2020.nchu.edu.tw/)
 - [Python：每次呼叫都擷取迭代器下一個元素](https://docs.python.org/3/builtins/functions.html#next)
 - [Boston Housing with Linear Regression](https://www.kaggle.com/code/henriqueyamahata/boston-housing-with-linear-regression/notebook)
+- [AI 初期 SDLC 實戰手冊](https://academy.claude.com/zh-TW/courses/ai-native-sdlc-playbook)
