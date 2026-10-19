@@ -3,3 +3,6 @@
 - [scikit-learn 官方 Pipeline 與複合估計器指南](https://scikit-learn.org/stable/modules/compose.html#pipeline)
 - [scikit-learn 官方 ColumnTransformer 異質特徵前處理指南](https://scikit-learn.org/stable/modules/compose.html#columntransformer-for-heterogeneous-data)
 - [scikit-learn 官方 TransformedTargetRegressor 目標變數轉換規格](https://scikit-learn.org/stable/modules/generated/sklearn.compose.TransformedTargetRegressor.html)
+- [scikit-learn 官方特徵選取技術全指南 (Feature selection)](https://scikit-learn.org/stable/modules/feature_selection.html)
+- [scikit-learn 官方循序特徵選取模組規格 (Sequential Feature Selection)](https://scikit-learn.org/stable/modules/feature_selection.html#sequential-feature-selection)
+- [scikit-learn 官方迴歸模型評估指標規格 (Regression metrics: RMSE, R²)](https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics)
