@@ -15,9 +15,7 @@ description: 知識點探討與驗證流程。根據 TASKS.md 針對實作所需
    - `issues/<topic-folder>/REQUIREMENT.md`
    - `issues/<topic-folder>/PLAN.md`
    - `issues/<topic-folder>/TASKS.md`
-3. **未通過門檻之處置（強制中斷）**：
-   - 若缺少上述任一檔案，**拒絕執行**。
-   - 缺少需求時引導執行 `/grill-me`；缺少計畫或任務時引導執行 `/plan`。
+3. 若無產出物則直接進行問答
 
 ### 步驟 2：剖析任務知識點與單題出題
 1. **分析 TASKS.md 核心知識點**：
