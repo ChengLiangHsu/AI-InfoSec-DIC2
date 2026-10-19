@@ -1,2 +1,5 @@
 - [PEP 8 匯入分組順序規範（標準庫、第三方庫、本地模組）](https://peps.python.org/pep-0008/#imports)
 - [Jupyter nbformat 官方 Code cell 欄位規格定義](https://nbformat.readthedocs.io/en/latest/format_description.html#code-cells)
+- [scikit-learn 官方 Pipeline 與複合估計器指南](https://scikit-learn.org/stable/modules/compose.html#pipeline)
+- [scikit-learn 官方 ColumnTransformer 異質特徵前處理指南](https://scikit-learn.org/stable/modules/compose.html#columntransformer-for-heterogeneous-data)
+- [scikit-learn 官方 TransformedTargetRegressor 目標變數轉換規格](https://scikit-learn.org/stable/modules/generated/sklearn.compose.TransformedTargetRegressor.html)
