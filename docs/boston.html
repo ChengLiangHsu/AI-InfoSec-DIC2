@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>波士頓房價多元線性迴歸分析與即時預測專業儀表板</title>
+  <meta name="description" content="波士頓房價多元線性迴歸專業儀表板：現代化 scikit-learn Pipeline 實踐、特徵複雜度權衡、4大業務架構評估、數值滑動預測試算器與殘差診斷。">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- 頂部導覽列 -->
+  <header class="header">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">AI & InfoSec Analytics</div>
+          <div class="brand-subtitle">BOSTON HOUSING // REGRESSION & PIPELINE EXPLORER</div>
+        </div>
+      </div>
+      <div class="project-nav-switcher">
+        <a href="./index.html" class="project-pill">🏢 50 Startups</a>
+        <a href="./boston.html" class="project-pill active">🏡 Boston Housing</a>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#overview" class="nav-link">概覽指標</a></li>
+          <li><a href="#architectures" class="nav-link">架構比較</a></li>
+          <li><a href="#complexity" class="nav-link">特徵數最優解</a></li>
+          <li><a href="#predictor" class="nav-link">即時房價試算</a></li>
+          <li><a href="#diagnostics" class="nav-link">殘差診斷</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="https://github.com/ChengLiangHsu/AI-InfoSec-DIC2" target="_blank" rel="noopener" class="gh-badge">
+          <span>GitHub Repository</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero 標題區 -->
+    <section class="hero" id="overview">
+      <div class="hero-tag">
+        <span>🏡 Boston Housing Dataset</span>
+        <span>•</span>
+        <span>scikit-learn Pipeline Best Practices</span>
+        <span>•</span>
+        <span>80/20 Train-Test Split (Zero Data Leakage)</span>
+      </div>
+      <h1 class="hero-title">
+        波士頓房價多元線性迴歸<br>
+        <span class="gradient-text">特徵工程與即時預測專業儀表板</span>
+      </h1>
+      <p class="hero-desc">
+        落實 scikit-learn 現代化 Pipeline 實踐：嚴格以 <code>ColumnTransformer</code> 隔離 12 個數值特徵標準化與二元河岸變數，透過 <code>TransformedTargetRegressor</code> 自動反轉千美元尺度。系統化對照 4 大模型架構、k=1~13 特徵複雜度曲線，並提供即時雙向滑動房價預測試算器。
+      </p>
+
+      <!-- KPI 核心統計卡 -->
+      <div class="kpi-grid" id="kpi-container">
+        <!-- 由 boston-app.js 動態渲染 -->
+      </div>
+    </section>
+
+    <!-- Section 2: 4 大模型架構評估與比較 -->
+    <section class="section" id="architectures">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-number">01</span>
+          <h2 class="section-title">4 大業務模型架構評估與 5-Fold 交叉驗證</h2>
+        </div>
+        <p class="section-desc">
+          探索不同特徵維度假設下之泛化表現：對照完整全特徵模型、領域關鍵 5 特徵、房價核心 3 要素與單房間數單變量基準。
+        </p>
+      </div>
+
+      <!-- 架構切換按鈕群 -->
+      <div class="model-select-group" id="architecture-buttons">
+        <!-- 由 JS 動態生成 -->
+      </div>
+
+      <!-- 當前選取模型之指標卡片 -->
+      <div class="metrics-cards-row" id="active-model-metrics">
+        <!-- 由 JS 動態更新 -->
+      </div>
+
+      <!-- 擬合 OLS 迴歸方程式 -->
+      <div class="equation-container" id="model-equation-box">
+        <div class="equation-label">FITTED OLS REGRESSION EQUATION (UNSTANDARDIZED):</div>
+        <div class="equation-formula" id="active-equation-text">載入中...</div>
+      </div>
+    </section>
+
+    <!-- Section 3: 特徵數最優解與複雜度分析 (k=1~13) -->
+    <section class="section" id="complexity">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-number">02</span>
+          <h2 class="section-title">特徵數量複雜度分析與最優折衷點 (k=1 ~ 13)</h2>
+        </div>
+        <p class="section-desc">
+          依各特徵與目標變數 <code>medv</code> 之皮爾森相關係數絕對值排序逐一納入模型，探索模型複雜度與泛化誤差（RMSE / R²）之邊際消長，實踐奧坎剃刀原則。
+        </p>
+      </div>
+
+      <!-- k 標籤快速按鈕列 -->
+      <div class="feature-count-selector" id="k-buttons-container">
+        <!-- 由 JS 動態渲染 -->
+      </div>
+
+      <!-- 雙折線圖：RMSE 走勢與 R² 走勢 -->
+      <div class="grid-2col">
+        <div class="glass-card chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">特徵數量 vs RMSE 泛化誤差曲線 (千美元)</div>
+              <div class="chart-subtitle">數值愈低愈佳；觀察特徵增加之邊際報酬遞減現象</div>
+            </div>
+            <div class="chart-badge">RMSE Trend</div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-complexity-rmse"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">特徵數量 vs R² 判定係數解釋力走勢</div>
+              <div class="chart-subtitle">數值愈高愈佳；k=5 時已掌握逾 93% 之可解釋變異</div>
+            </div>
+            <div class="chart-badge">R² Score</div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-complexity-r2"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: 即時波士頓房價預測試算器 -->
+    <section class="section" id="predictor">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-number">03</span>
+          <h2 class="section-title">波士頓房價即時預測試算器 (Live Price Predictor)</h2>
+        </div>
+        <p class="section-desc">
+          拖曳數值滑桿或手動鍵入參數，由前端以微秒級速度即時運算房價中位數（千美元與原始美元尺度），支援多模型動態連動與典型社區情境一鍵套用。
+        </p>
+      </div>
+
+      <div class="predictor-grid">
+        <!-- 左欄：輸入控制器與情境 -->
+        <div class="predictor-inputs-col">
+          <!-- 典型社區情境按鈕列 -->
+          <div class="glass-card preset-card">
+            <div class="preset-title">
+              <span>🏙️ 典型社區情境預設 (Scenario Presets)</span>
+              <span class="preset-subtitle">點擊一鍵套用經典社區數據</span>
+            </div>
+            <div class="preset-buttons-row" id="preset-buttons-container">
+              <!-- 由 JS 動態生成 -->
+            </div>
+          </div>
+
+          <!-- 5 大核心特徵輸入卡 -->
+          <div class="inputs-stack" id="core-inputs-stack">
+            <!-- 由 JS 動態生成 -->
+          </div>
+
+          <!-- 手風琴展開按鈕 -->
+          <button type="button" class="features-accordion-toggle" id="toggle-advanced-features">
+            <span>展開其餘 8 項進階特徵（土地規劃、屋齡、距離、交通、空氣品質等）</span>
+            <span class="toggle-icon">▼</span>
+          </button>
+
+          <!-- 其餘 8 項進階特徵輸入卡容器 -->
+          <div class="advanced-features-container" id="advanced-inputs-container">
+            <!-- 由 JS 動態生成 -->
+          </div>
+        </div>
+
+        <!-- 右欄：即時預測結果大面板 -->
+        <div class="predictor-results-col">
+          <div class="glass-card prediction-result-card">
+            <div class="result-badge">
+              <span class="status-dot"></span>
+              <span>LIVE INFERENCE ENGINE</span>
+            </div>
+
+            <div class="result-label">預測住宅價格中位數 (MEDV)</div>
+            
+            <div class="dual-currency-box">
+              <div class="result-value" id="pred-medv-value">$0.00 k</div>
+              <div class="dual-currency-usd" id="pred-usd-value">($0 USD)</div>
+            </div>
+
+            <!-- 與歷史母體均值比較 -->
+            <div class="result-diff-badge" id="pred-diff-badge">
+              <span id="pred-diff-text">正在計算基準差異...</span>
+            </div>
+
+            <div class="result-divider"></div>
+
+            <!-- 當前模型與特徵概要 -->
+            <div class="active-model-meta-box">
+              <div class="meta-row">
+                <span class="meta-label">作用中模型：</span>
+                <span class="meta-val" id="predictor-active-model-name">全特徵模型</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">有效特徵數：</span>
+                <span class="meta-val" id="predictor-active-feature-count">13 項特徵</span>
+              </div>
+            </div>
+
+            <div class="result-divider"></div>
+
+            <!-- 特徵邊際增量拆解長條圖 -->
+            <div class="breakdown-title">特徵邊際貢獻度拆解 (Marginal Contribution)</div>
+            <div class="breakdown-subtitle">相較於訓練集基準均值之正負推升效益</div>
+            <div class="contribution-list" id="contribution-bars-container">
+              <!-- 由 JS 動態渲染 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: 殘差診斷與無標籤批次推論 -->
+    <section class="section" id="diagnostics">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-number">04</span>
+          <h2 class="section-title">殘差診斷與未標籤推論展示 (Diagnostics & Inference)</h2>
+        </div>
+        <p class="section-desc">
+          提供獨立測試集 (67 筆) 真實值與預測值殘差診斷，以及未見過的真實 Kaggle 測試集 (173 筆) 批次預測結果切換。
+        </p>
+      </div>
+
+      <div class="glass-card table-card">
+        <!-- 分頁切換 Header -->
+        <div class="table-header-row">
+          <div class="table-title-box">
+            <div class="table-title" id="diagnostics-table-title">67 筆獨立測試集殘差與離群值診斷</div>
+            <div class="table-subtitle" id="diagnostics-table-subtitle">點擊表頭可依照殘差、真實房價或百分比誤差重新排序</div>
+          </div>
+          <div class="table-tab-nav">
+            <button type="button" class="table-tab-btn active" id="tab-btn-residuals">67 筆測試殘差診斷</button>
+            <button type="button" class="table-tab-btn" id="tab-btn-unlabeled">173 筆未標籤批次預測</button>
+          </div>
+        </div>
+
+        <!-- 殘差診斷表格 -->
+        <div class="table-responsive" id="table-residuals-wrapper">
+          <table class="data-table" id="table-residuals">
+            <thead>
+              <tr>
+                <th data-sort="rank">排名 ↕</th>
+                <th data-sort="sampleId">樣本 ID ↕</th>
+                <th data-sort="actualMedv">實際房價 (千美元) ↕</th>
+                <th data-sort="predictedMedv">預測房價 (千美元) ↕</th>
+                <th data-sort="residual">殘差 (千美元) ↕</th>
+                <th data-sort="absError">絕對誤差 ↕</th>
+                <th data-sort="pctError">誤差百分比 ↕</th>
+                <th>診斷狀態</th>
+              </tr>
+            </thead>
+            <tbody id="residuals-tbody">
+              <!-- 由 JS 動態渲染 -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 未標籤測試集表格 (預設隱藏) -->
+        <div class="table-responsive" id="table-unlabeled-wrapper" style="display: none;">
+          <table class="data-table" id="table-unlabeled">
+            <thead>
+              <tr>
+                <th>樣本 ID</th>
+                <th>犯罪率 (crim)</th>
+                <th>平均房間數 (rm)</th>
+                <th>財產稅率 (tax)</th>
+                <th>學區師生比 (ptratio)</th>
+                <th>低收入比例 (lstat)</th>
+                <th>預測房價 (千美元)</th>
+                <th>換算美元價格</th>
+              </tr>
+            </thead>
+            <tbody id="unlabeled-tbody">
+              <!-- 由 JS 動態渲染 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 頁腳 -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="brand-title">🏡 Boston Housing Linear Regression Explorer</div>
+        <div class="brand-subtitle">Built with Pure Vanilla HTML5, CSS3, JavaScript, and Chart.js</div>
+      </div>
+      <div class="footer-meta">
+        <div>Dataset: Boston Housing (Harrison & Rubinfeld, 1978)</div>
+        <div>Methodology: scikit-learn Pipeline with Zero Data Leakage</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 引入 Chart.js CDN 與資料/邏輯腳本 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="./boston-data.js"></script>
+  <script src="./boston-app.js"></script>
+</body>
+</html>
