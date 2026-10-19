@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>50-Startups 線性迴歸分析與特徵工程專業儀表板</title>
+  <meta name="description" content="50-Startups 創業公司獲利預測模型評估：演算法比較、特徵選取方式、特徵數消長趨勢與相關性分析互動視覺化。">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- 頂部導覽列 -->
+  <header class="header">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">AI & InfoSec Analytics</div>
+          <div class="brand-subtitle">50-STARTUPS // REGRESSION & FEATURE SELECTION</div>
+        </div>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#overview" class="nav-link">概覽摘要</a></li>
+          <li><a href="#algorithms" class="nav-link">演算法對比</a></li>
+          <li><a href="#feature-methods" class="nav-link">特徵選擇方式</a></li>
+          <li><a href="#feature-counts" class="nav-link">特徵數消長</a></li>
+          <li><a href="#data-table" class="nav-link">綜合數據表</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="https://github.com/ChengLiangHsu/AI-InfoSec-DIC2" target="_blank" rel="noopener" class="gh-badge">
+          <span>GitHub Repository</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero 標題區 -->
+    <section class="hero" id="overview">
+      <div class="hero-tag">
+        <span>🔬 Empirical ML Benchmark</span>
+        <span>•</span>
+        <span>Test Size = 0.2 / Random State = 0</span>
+      </div>
+      <h1 class="hero-title">
+        50-Startups 獲利預測與<br>
+        <span class="gradient-text">特徵工程深度分析儀表板</span>
+      </h1>
+      <p class="hero-desc">
+        本分析全面對照多元線性迴歸、Ridge、Lasso 與 ElasticNet 演算法，並嚴謹評估循序前向選擇 (SFS) 與相關係數法之特徵選取效益。量化證實精簡至 2 個關鍵特徵能達到全特徵基準更優的泛化預測力。
+      </p>
+
+      <!-- KPI 摘要卡群 -->
+      <div class="kpi-grid" id="kpi-container">
+        <!-- 由 app.js 動態渲染 KPI 卡片 -->
+      </div>
+    </section>
+
+    <!-- 模組一：演算法效能比較 (Algorithm Comparison) -->
+    <section class="section" id="algorithms">
+      <div class="section-head">
+        <span class="section-tag">01 // ALGORITHM BENCHMARK</span>
+        <h2 class="section-title">迴歸演算法綜合評估</h2>
+        <p class="section-subtitle">
+          在全特徵 (5 Features) 基準下對照標準最小平方法 (OLS) 與不同正則化懲罰機制（Ridge L2、Lasso L1、ElasticNet）之測試集泛化能力。
+        </p>
+      </div>
+
+      <div class="grid-2col">
+        <!-- 演算法長條對比圖 -->
+        <div class="glass-card chart-box">
+          <div class="chart-header">
+            <h3 class="chart-title">演算法測試集指標對比 (RMSE vs R²)</h3>
+            <span class="kpi-badge badge-indigo">全特徵基準</span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chart-algorithms"></canvas>
+          </div>
+        </div>
+
+        <!-- 演算法特點解析列表 -->
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+          <h3 class="chart-title" style="margin-bottom: 1.25rem;">演算法機制與正則化評析</h3>
+          <div id="algorithm-cards-container" style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- 由 app.js 動態載入演算法說明 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模組二：特徵選擇方式比較 (Feature Selection Methods) -->
+    <section class="section" id="feature-methods">
+      <div class="section-head">
+        <span class="section-tag">02 // FEATURE SELECTION COMPARISON</span>
+        <h2 class="section-title">特徵選擇方法成效對照</h2>
+        <p class="section-subtitle">
+          比較包裝法 (SFS)、過濾法 (Pearson Filter)、嵌入法 (Lasso Sparse) 與無選取基準之特徵精簡度與測試表現。
+        </p>
+      </div>
+
+      <!-- 四大特徵選取方式卡片清單 -->
+      <div class="methods-grid" id="methods-container">
+        <!-- 由 app.js 動態載入方法卡片 -->
+      </div>
+
+      <!-- 特徵相關係數長條圖 -->
+      <div class="glass-card chart-box" style="margin-top: 1.5rem;">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title">各特徵與目標變數 (Profit) 之皮爾森相關係數分析</h3>
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">衡量單變數線性關聯強度，為過濾法特徵重要性排序之數學依據</p>
+          </div>
+          <span class="kpi-badge badge-cyan">Pearson Correlation (r)</span>
+        </div>
+        <div class="chart-canvas-wrapper" style="min-height: 280px;">
+          <canvas id="chart-correlations"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模組三：特徵數量消長漸進分析 (Feature Count Sensitivity) -->
+    <section class="section" id="feature-counts">
+      <div class="section-head">
+        <span class="section-tag">03 // COMPLEXITY VS PERFORMANCE</span>
+        <h2 class="section-title">特徵數量消長趨勢 (k = 1 ~ 5)</h2>
+        <p class="section-subtitle">
+          依 SFS 順序逐步納入特徵，觀察模型在測試集之 RMSE 誤差收斂與 R-squared 解釋力變化。滑鼠懸停於折線節點可檢視子集特徵明細。
+        </p>
+      </div>
+
+      <div class="glass-card chart-box">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title">特徵數敏感度曲線 (雙 Y 軸互動圖表)</h3>
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">左軸：測試集 RMSE (越低越好) ｜ 右軸：測試集 R² (越高越好)</p>
+          </div>
+          <span class="kpi-badge badge-emerald">Optimal: k = 2</span>
+        </div>
+        <div class="chart-canvas-wrapper" style="min-height: 380px;">
+          <canvas id="chart-feature-counts"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模組四：綜合比較與動態排序表格 -->
+    <section class="section" id="data-table">
+      <div class="section-head">
+        <span class="section-tag">04 // QUANTITATIVE COMPARISON</span>
+        <h2 class="section-title">完整評估數據明細表</h2>
+        <p class="section-subtitle">
+          點擊欄位標頭（如特徵數、測試集 RMSE、測試集 R²）即可動態升降序排序。高亮行代表測試集綜合表現最優之組態。
+        </p>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table" id="interactive-table">
+          <thead>
+            <tr>
+              <th data-sort="k">特徵數量</th>
+              <th data-sort="featuresLabel">納入特徵子集名稱</th>
+              <th data-sort="trainR2">訓練集 R²</th>
+              <th data-sort="testR2">測試集 R²</th>
+              <th data-sort="testRMSE">測試集 RMSE</th>
+              <th data-sort="testMAE">測試集 MAE</th>
+              <th>模型診斷評析</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- 由 app.js 動態填充表格 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- 頁尾 -->
+  <footer class="footer container">
+    <div class="footer-links">
+      <a href="https://github.com/ChengLiangHsu/AI-InfoSec-DIC2" target="_blank" rel="noopener">GitHub 原始碼</a>
+      <a href="./data.js" target="_blank">資料集原始碼 (data.js)</a>
+      <a href="../KEEP.md" target="_blank">知識依據文獻 (KEEP.md)</a>
+    </div>
+    <p>© 2026 AI-InfoSec-DIC2 Project. Designed with Pure Glassmorphism Aesthetics for GitHub Pages.</p>
+  </footer>
+
+  <!-- 引用 Chart.js CDN 與降級檢查機制 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      console.warn("CDN 載入超時，正嘗試備用 CDN...");
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"><\/script>');
+    }
+  </script>
+
+  <!-- 本地結構化資料與控制邏輯（嚴格相對路徑） -->
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
