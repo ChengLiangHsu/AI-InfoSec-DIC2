@@ -6,3 +6,4 @@
 - [scikit-learn 官方特徵選取技術全指南 (Feature selection)](https://scikit-learn.org/stable/modules/feature_selection.html)
 - [scikit-learn 官方循序特徵選取模組規格 (Sequential Feature Selection)](https://scikit-learn.org/stable/modules/feature_selection.html#sequential-feature-selection)
 - [scikit-learn 官方迴歸模型評估指標規格 (Regression metrics: RMSE, R²)](https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics)
+https://www.faststone.org/FSCaptureDetail.htm
