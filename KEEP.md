@@ -1,0 +1,2 @@
+- [PEP 8 匯入分組順序規範（標準庫、第三方庫、本地模組）](https://peps.python.org/pep-0008/#imports)
+- [Jupyter nbformat 官方 Code cell 欄位規格定義](https://nbformat.readthedocs.io/en/latest/format_description.html#code-cells)
