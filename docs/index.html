@@ -29,6 +29,7 @@
           <li><a href="#algorithms" class="nav-link">演算法對比</a></li>
           <li><a href="#feature-methods" class="nav-link">特徵選擇方式</a></li>
           <li><a href="#feature-counts" class="nav-link">特徵數消長</a></li>
+          <li><a href="#predictor" class="nav-link">即時獲利預測</a></li>
           <li><a href="#data-table" class="nav-link">綜合數據表</a></li>
         </ul>
       </nav>
@@ -149,10 +150,208 @@
       </div>
     </section>
 
-    <!-- 模組四：綜合比較與動態排序表格 -->
+    <!-- 模組四：新創獲利即時預測試算器 (Live Profit Predictor) -->
+    <section class="section" id="predictor">
+      <div class="section-head">
+        <span class="section-tag">04 // LIVE PROFIT PREDICTOR</span>
+        <h2 class="section-title">新創獲利即時預測試算器</h2>
+        <p class="section-subtitle">
+          自訂調配各項營運支出與地區，透過多元線性迴歸模型即時推估獲利金額，動態驗證特徵邊際效益與簡約律模型價值。
+        </p>
+      </div>
+
+      <div class="predictor-grid">
+        <!-- 左側：模型切換、情境預設與特徵控制項 -->
+        <div class="glass-card predictor-controls-card">
+          <!-- 模型選擇按鈕組 -->
+          <div class="control-block">
+            <div class="control-block-header">
+              <label class="control-label">1. 選取推論迴歸模型 (Active Regression Model)</label>
+              <span class="kpi-badge badge-emerald" id="predictor-model-badge">👑 最優推薦 (奧坎剃刀)</span>
+            </div>
+            <div class="model-selector-pills" id="model-selector-group">
+              <button type="button" class="model-pill active" data-model="k2">
+                <span class="pill-title">k = 2 最佳模型</span>
+                <span class="pill-tag">R&D + Marketing</span>
+              </button>
+              <button type="button" class="model-pill" data-model="k5">
+                <span class="pill-title">k = 5 全特徵基準</span>
+                <span class="pill-tag">All Features</span>
+              </button>
+              <button type="button" class="model-pill" data-model="k1">
+                <span class="pill-title">k = 1 單特徵</span>
+                <span class="pill-tag">R&D Only</span>
+              </button>
+              <button type="button" class="model-pill" data-model="k3">
+                <span class="pill-title">k = 3 三特徵</span>
+                <span class="pill-tag">+ NY</span>
+              </button>
+              <button type="button" class="model-pill" data-model="k4">
+                <span class="pill-title">k = 4 四特徵</span>
+                <span class="pill-tag">+ FL</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 快速情境預設按鈕 -->
+          <div class="control-block">
+            <label class="control-label">2. 載入經典情境預設 (Quick Scenario Presets)</label>
+            <div class="preset-buttons" id="preset-buttons-container">
+              <!-- 由 app.js 動態渲染情境按鈕 -->
+            </div>
+          </div>
+
+          <!-- 特徵數值輸入滑桿群 -->
+          <div class="control-block">
+            <label class="control-label">3. 調整特徵數值 (Feature Parameter Inputs)</label>
+            <div class="inputs-stack">
+              <!-- 特徵 1: R&D Spend -->
+              <div class="input-card" id="input-group-rd">
+                <div class="input-top-row">
+                  <div class="input-title-wrap">
+                    <span class="input-name">研發支出 (R&D Spend)</span>
+                    <span class="kpi-badge badge-cyan" style="font-size: 0.7rem;">核心驅動 (r = 0.973)</span>
+                  </div>
+                  <div class="input-val-display" id="label-rd">$100,000</div>
+                </div>
+                <div class="input-controls-row">
+                  <input type="range" class="tech-slider" id="slider-rd" min="0" max="250000" step="5000" value="100000">
+                  <div class="number-input-wrap">
+                    <span class="currency-prefix">$</span>
+                    <input type="number" class="tech-number-input" id="num-rd" min="0" max="250000" step="5000" value="100000">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 特徵 2: Marketing Spend -->
+              <div class="input-card" id="input-group-mkt">
+                <div class="input-top-row">
+                  <div class="input-title-wrap">
+                    <span class="input-name">行銷支出 (Marketing Spend)</span>
+                    <span class="kpi-badge badge-indigo" style="font-size: 0.7rem;">顯著輔助 (r = 0.748)</span>
+                  </div>
+                  <div class="input-val-display" id="label-mkt">$150,000</div>
+                </div>
+                <div class="input-controls-row">
+                  <input type="range" class="tech-slider" id="slider-mkt" min="0" max="500000" step="5000" value="150000">
+                  <div class="number-input-wrap">
+                    <span class="currency-prefix">$</span>
+                    <input type="number" class="tech-number-input" id="num-mkt" min="0" max="500000" step="5000" value="150000">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 特徵 3: Administration (可動態反灰停用) -->
+              <div class="input-card" id="input-group-admin">
+                <div class="input-top-row">
+                  <div class="input-title-wrap">
+                    <span class="input-name">行政支出 (Administration)</span>
+                    <span class="input-status-badge badge-muted" id="status-badge-admin">非當前模型特徵 (Inactive)</span>
+                  </div>
+                  <div class="input-val-display" id="label-admin">$120,000</div>
+                </div>
+                <div class="input-controls-row">
+                  <input type="range" class="tech-slider" id="slider-admin" min="0" max="250000" step="5000" value="120000">
+                  <div class="number-input-wrap">
+                    <span class="currency-prefix">$</span>
+                    <input type="number" class="tech-number-input" id="num-admin" min="0" max="250000" step="5000" value="120000">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 特徵 4: State Location (可動態反灰停用) -->
+              <div class="input-card" id="input-group-state">
+                <div class="input-top-row">
+                  <div class="input-title-wrap">
+                    <span class="input-name">註冊所在地 (State Location)</span>
+                    <span class="input-status-badge badge-muted" id="status-badge-state">非當前模型特徵 (Inactive)</span>
+                  </div>
+                  <div class="input-val-display" id="label-state">California</div>
+                </div>
+                <div class="input-controls-row">
+                  <select class="tech-select" id="select-state">
+                    <option value="California">加州 (California) — 基準參考組 (Dummy = 0)</option>
+                    <option value="New York">紐約州 (New York) — 虛擬變數 State_New York = 1</option>
+                    <option value="Florida">佛羅里達州 (Florida) — 虛擬變數 State_Florida = 1</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側：預測結果展示、數學公式與特徵貢獻拆解 -->
+        <div class="predictor-results-column">
+          <!-- 獲利預測巨幅卡 -->
+          <div class="glass-card result-hero-card">
+            <div class="result-hero-header">
+              <div>
+                <span class="result-hero-tag">PREDICTED STARTUP PROFIT</span>
+                <h3 class="result-hero-title">預估新創年度淨利</h3>
+              </div>
+              <div class="pulse-indicator">
+                <span class="pulse-dot"></span>
+                <span style="font-size: 0.75rem; color: var(--accent-emerald);">即時推論連動中</span>
+              </div>
+            </div>
+
+            <div class="result-value-wrap">
+              <span class="result-currency">$</span>
+              <span class="result-value" id="pred-profit-value">130,154.20</span>
+            </div>
+
+            <!-- 與基準平均利潤比較 -->
+            <div class="result-benchmark-row">
+              <div class="benchmark-pill" id="pred-benchmark-pill">
+                <span id="benchmark-icon">▲</span>
+                <span id="benchmark-pct">+16.2%</span>
+                <span class="benchmark-subtext">相較母體歷史平均 ($112,013)</span>
+              </div>
+              <div class="model-meta-info" id="pred-model-meta">
+                RMSE: $8,198.80 ｜ R²: 0.9474
+              </div>
+            </div>
+          </div>
+
+          <!-- 數學公式與邊際貢獻拆解卡 -->
+          <div class="glass-card result-details-card">
+            <div class="details-section-head">
+              <h4 class="details-title">當前迴歸公式與特徵邊際增量分解</h4>
+              <span class="kpi-badge badge-cyan" id="formula-feature-count">2 Active Features</span>
+            </div>
+            
+            <!-- 數學方程式字串 -->
+            <div class="formula-box" id="pred-formula-box">
+              Profit = 46,346.34 + 0.7886 × (R&D) + 0.0326 × (Marketing)
+            </div>
+
+            <!-- 特徵增量貢獻度分解 -->
+            <div class="breakdown-section">
+              <div class="breakdown-header">
+                <span>特徵變數項目</span>
+                <span>增量貢獻度 (Marginal Contribution)</span>
+              </div>
+              <div class="breakdown-list" id="pred-breakdown-list">
+                <!-- 由 app.js 動態渲染各項增量條 -->
+              </div>
+            </div>
+
+            <!-- 奧坎剃刀即時洞察提示 -->
+            <div class="parsimony-insight-box" id="pred-insight-box">
+              <div class="insight-icon">💡</div>
+              <div class="insight-text" id="pred-insight-text">
+                奧坎剃刀黃金組合：兼顧研發與行銷投入，在測試集取得全特徵更優之最小誤差 ($8,198.80) 與最高解釋力 (0.9474)。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 模組五：綜合比較與動態排序表格 -->
     <section class="section" id="data-table">
       <div class="section-head">
-        <span class="section-tag">04 // QUANTITATIVE COMPARISON</span>
+        <span class="section-tag">05 // QUANTITATIVE COMPARISON</span>
         <h2 class="section-title">完整評估數據明細表</h2>
         <p class="section-subtitle">
           點擊欄位標頭（如特徵數、測試集 RMSE、測試集 R²）即可動態升降序排序。高亮行代表測試集綜合表現最優之組態。

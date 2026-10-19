@@ -204,5 +204,147 @@ window.DASHBOARD_DATA = {
     { feature: "Administration", correlation: 0.2007, absCorr: 0.2007, significance: "微弱正相關", impact: "模型噪音 / 干擾項" },
     { feature: "State_Florida", correlation: 0.1162, absCorr: 0.1162, significance: "極弱正相關", impact: "區域效應不明顯" },
     { feature: "State_New York", correlation: 0.0649, absCorr: 0.0649, significance: "幾乎無相關", impact: "無預測邊際價值" }
-  ]
+  ],
+
+  // 即時預測模型迴歸係數定義 (OLS, test_size=0.2, random_state=0)
+  predictionModels: {
+    k1: {
+      id: "k1",
+      name: "單特徵模型 (R&D)",
+      badge: "極簡基準",
+      k: 1,
+      rmse: 8274.87,
+      r2: 0.946459,
+      features: ["R&D Spend"],
+      intercept: 48416.2977,
+      coefficients: {
+        "R&D Spend": 0.851623
+      },
+      formula: "Profit = 48,416.30 + 0.8516 × (R&D)",
+      insight: "僅憑研發支出單一項即可解釋高達 94.6% 的獲利變異，驗證研發投入為企業成長核心動力。"
+    },
+    k2: {
+      id: "k2",
+      name: "最佳 2 特徵模型 (R&D + Marketing)",
+      badge: "👑 最優推薦 (奧坎剃刀)",
+      isOptimal: true,
+      k: 2,
+      rmse: 8198.80,
+      r2: 0.947439,
+      features: ["R&D Spend", "Marketing Spend"],
+      intercept: 46346.3388,
+      coefficients: {
+        "R&D Spend": 0.788618,
+        "Marketing Spend": 0.032577
+      },
+      formula: "Profit = 46,346.34 + 0.7886 × (R&D) + 0.0326 × (Marketing)",
+      insight: "奧坎剃刀黃金組合：兼顧研發與行銷投入，在測試集取得全特徵更優之最小誤差 ($8,198.80) 與最高解釋力 (0.9474)。"
+    },
+    k3: {
+      id: "k3",
+      name: "3 特徵模型 (R&D + Marketing + NY)",
+      badge: "微幅過擬合",
+      k: 3,
+      rmse: 8309.06,
+      r2: 0.946015,
+      features: ["R&D Spend", "Marketing Spend", "State_New York"],
+      intercept: 46100.2913,
+      coefficients: {
+        "R&D Spend": 0.785871,
+        "Marketing Spend": 0.033272,
+        "State_New York": 864.001870
+      },
+      formula: "Profit = 46,100.29 + 0.7859 × (R&D) + 0.0333 × (Mkt) + 864.00 × (NY)",
+      insight: "納入紐約州虛擬變數後，測試集 RMSE 開始由 8198 反彈至 8309，呈現邊際效益遞減。"
+    },
+    k4: {
+      id: "k4",
+      name: "4 特徵模型 (R&D + Marketing + NY + FL)",
+      badge: "邊際效益遞減",
+      k: 4,
+      rmse: 8409.92,
+      r2: 0.944697,
+      features: ["R&D Spend", "Marketing Spend", "State_New York", "State_Florida"],
+      intercept: 46329.0602,
+      coefficients: {
+        "R&D Spend": 0.785142,
+        "Marketing Spend": 0.033956,
+        "State_New York": 554.657333,
+        "State_Florida": -826.468159
+      },
+      formula: "Profit = 46,329.06 + 0.7851 × (R&D) + 0.0340 × (Mkt) + 554.66 × (NY) - 826.47 × (FL)",
+      insight: "加入佛羅里達州後測試集表現持續下滑，顯見地區虛擬變數對獲利預測之噪音大於信號。"
+    },
+    k5: {
+      id: "k5",
+      name: "全 5 特徵基準模型 (All Features)",
+      badge: "全特徵基準 (泛化最差)",
+      k: 5,
+      rmse: 9137.99,
+      r2: 0.934707,
+      features: ["R&D Spend", "Administration", "Marketing Spend", "State_Florida", "State_New York"],
+      intercept: 42554.1676,
+      coefficients: {
+        "R&D Spend": 0.773467,
+        "Administration": 0.032885,
+        "Marketing Spend": 0.036610,
+        "State_Florida": -959.284160,
+        "State_New York": 699.369053
+      },
+      formula: "Profit = 42,554.17 + 0.7735 × (R&D) + 0.0329 × (Admin) + 0.0366 × (Mkt) - 959.28 × (FL) + 699.37 × (NY)",
+      insight: "納入行政支出與全州別變數，因多重共線性與低相關噪音拖累，測試集 RMSE 激增至 $9,137.99。"
+    }
+  },
+
+  // 經典情境預設組合 (便於使用者一鍵試算體驗)
+  predictionPresets: [
+    {
+      id: "avg",
+      name: "典型平均新創",
+      tag: "50家母體平均值",
+      desc: "反映 50 家新創公司歷史均值配置",
+      rd: 74000,
+      mkt: 210000,
+      admin: 121000,
+      state: "California"
+    },
+    {
+      id: "tech",
+      name: "硬科技研發型",
+      tag: "Deep Tech",
+      desc: "高強度研發投入，著重技術突破與專利建構",
+      rd: 160000,
+      mkt: 100000,
+      admin: 110000,
+      state: "New York"
+    },
+    {
+      id: "growth",
+      name: "市場擴張導向",
+      tag: "Growth Marketing",
+      desc: "高行銷預算快速獲取市場份額與用戶規模",
+      rd: 60000,
+      mkt: 420000,
+      admin: 130000,
+      state: "Florida"
+    },
+    {
+      id: "lean",
+      name: "精實自籌新創",
+      tag: "Lean Bootstrap",
+      desc: "極低預算精準營運，控制行政與行銷成本",
+      rd: 20000,
+      mkt: 15000,
+      admin: 60000,
+      state: "California"
+    }
+  ],
+
+  // 歷史數據集基準指標
+  historicalBenchmark: {
+    meanProfit: 112012.64,
+    medianProfit: 107978.19,
+    minProfit: 14681.40,
+    maxProfit: 192261.83
+  }
 };
