@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>50-Startups 線性迴歸分析與特徵工程專業儀表板</title>
   <meta name="description" content="50-Startups 創業公司獲利預測模型評估：演算法比較、特徵選取方式、特徵數消長趨勢與相關性分析互動視覺化。">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./style.css?v=20261019">
 </head>
 <body>
 
@@ -201,7 +201,22 @@
           <div class="control-block">
             <label class="control-label">2. 載入經典情境預設 (Quick Scenario Presets)</label>
             <div class="preset-buttons" id="preset-buttons-container">
-              <!-- 由 app.js 動態渲染情境按鈕 -->
+              <button type="button" class="preset-btn active" data-preset-id="avg">
+                <span>典型平均新創</span>
+                <span style="font-size: 0.68rem; opacity: 0.7;">(50家母體平均值)</span>
+              </button>
+              <button type="button" class="preset-btn" data-preset-id="tech">
+                <span>硬科技研發型</span>
+                <span style="font-size: 0.68rem; opacity: 0.7;">(Deep Tech)</span>
+              </button>
+              <button type="button" class="preset-btn" data-preset-id="growth">
+                <span>市場擴張導向</span>
+                <span style="font-size: 0.68rem; opacity: 0.7;">(Growth Marketing)</span>
+              </button>
+              <button type="button" class="preset-btn" data-preset-id="lean">
+                <span>精實自籌新創</span>
+                <span style="font-size: 0.68rem; opacity: 0.7;">(Lean Bootstrap)</span>
+              </button>
             </div>
           </div>
 
@@ -336,7 +351,27 @@
                 <span>增量貢獻度 (Marginal Contribution)</span>
               </div>
               <div class="breakdown-list" id="pred-breakdown-list">
-                <!-- 由 app.js 動態渲染各項增量條 -->
+                <div class="breakdown-item">
+                  <div>
+                    <div class="breakdown-feat-name">模型基準截距項 (β₀)</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono);">未投入任何支出時的基準估計常數</div>
+                  </div>
+                  <div class="breakdown-contrib-val positive">+$46,346.34</div>
+                </div>
+                <div class="breakdown-item">
+                  <div>
+                    <div class="breakdown-feat-name">研發支出 (R&D Spend)</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono);">β = 0.7886 × $100,000</div>
+                  </div>
+                  <div class="breakdown-contrib-val positive">+$78,861.80</div>
+                </div>
+                <div class="breakdown-item">
+                  <div>
+                    <div class="breakdown-feat-name">行銷支出 (Marketing Spend)</div>
+                    <div style="font-size: 0.72rem; color: var(--text-dim); font-family: var(--font-mono);">β = 0.0326 × $150,000</div>
+                  </div>
+                  <div class="breakdown-contrib-val positive">+$4,886.55</div>
+                </div>
               </div>
             </div>
 
@@ -403,7 +438,7 @@
   </script>
 
   <!-- 本地結構化資料與控制邏輯（嚴格相對路徑） -->
-  <script src="./data.js"></script>
-  <script src="./app.js"></script>
+  <script src="./data.js?v=20261019"></script>
+  <script src="./app.js?v=20261019"></script>
 </body>
 </html>

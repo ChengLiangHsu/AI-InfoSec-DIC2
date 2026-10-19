@@ -3,36 +3,67 @@
  * Powered by Pure Vanilla JavaScript & Chart.js v4
  */
 
-document.addEventListener("DOMContentLoaded", () => {
+function initDashboard() {
   const data = window.DASHBOARD_DATA;
-  if (!data) {
-    console.error("Dashboard data not found! Please check docs/data.js.");
-    return;
-  }
 
   // 1. 初始化 Chart.js 全域深色主題
-  setupChartGlobalDefaults();
+  try {
+    setupChartGlobalDefaults();
+  } catch (err) {
+    console.warn("Chart.js setup warning:", err);
+  }
 
   // 2. 渲染頂部 KPI 摘要卡
-  renderKPICards(data.kpi);
+  try {
+    if (data && data.kpi) renderKPICards(data.kpi);
+  } catch (err) {
+    console.warn("KPI render error:", err);
+  }
 
   // 3. 渲染演算法比較模組 (圖表 + 卡片)
-  initAlgorithmsModule(data.algorithms);
+  try {
+    if (data && data.algorithms) initAlgorithmsModule(data.algorithms);
+  } catch (err) {
+    console.warn("Algorithms module error:", err);
+  }
 
   // 4. 渲染特徵選擇方式模組 (卡片 + 相關係數圖)
-  initFeatureSelectionModule(data.featureSelectionMethods, data.correlations);
+  try {
+    if (data && data.featureSelectionMethods) initFeatureSelectionModule(data.featureSelectionMethods, data.correlations);
+  } catch (err) {
+    console.warn("Feature selection module error:", err);
+  }
 
   // 5. 渲染特徵數量漸進消長雙軸折線圖
-  initFeatureCountChart(data.featureCountSensitivity);
+  try {
+    if (data && data.featureCountSensitivity) initFeatureCountChart(data.featureCountSensitivity);
+  } catch (err) {
+    console.warn("Sensitivity chart error:", err);
+  }
 
   // 6. 渲染與初始化互動數據表格 (支援排序)
-  initInteractiveTable(data.featureCountSensitivity);
-
-  // 7. 渲染與初始化新創獲利即時預測試算器
-  if (data.predictionModels) {
-    initPredictorModule(data.predictionModels, data.predictionPresets, data.historicalBenchmark);
+  try {
+    if (data && data.featureCountSensitivity) initInteractiveTable(data.featureCountSensitivity);
+  } catch (err) {
+    console.warn("Interactive table error:", err);
   }
-});
+
+  // 7. 渲染與初始化新創獲利即時預測試算器（具備強韌降級備援）
+  try {
+    const models = (data && data.predictionModels) ? data.predictionModels : DEFAULT_PREDICTION_MODELS;
+    const presets = (data && data.predictionPresets) ? data.predictionPresets : DEFAULT_PRESETS;
+    const benchmark = (data && data.historicalBenchmark) ? data.historicalBenchmark : DEFAULT_BENCHMARK;
+    initPredictorModule(models, presets, benchmark);
+  } catch (err) {
+    console.error("Predictor module initialization error:", err);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initDashboard);
+} else {
+  initDashboard();
+}
 
 /* ==========================================================================
    1. Chart.js Global Defaults
@@ -465,7 +496,100 @@ function initInteractiveTable(sensitivityData) {
 /* ==========================================================================
    7. Live Profit Predictor Controller
    ========================================================================== */
-function initPredictorModule(predictionModels, presets, benchmark) {
+const DEFAULT_PREDICTION_MODELS = {
+  k1: {
+    id: "k1",
+    name: "單特徵模型 (R&D)",
+    badge: "極簡基準",
+    k: 1,
+    rmse: 8274.87,
+    r2: 0.946459,
+    features: ["R&D Spend"],
+    intercept: 48416.2977,
+    coefficients: { "R&D Spend": 0.851623 },
+    formula: "Profit = 48,416.30 + 0.8516 × (R&D)",
+    insight: "僅憑研發支出單一項即可解釋高達 94.6% 的獲利變異，驗證研發投入為企業成長核心動力。"
+  },
+  k2: {
+    id: "k2",
+    name: "最佳 2 特徵模型 (R&D + Marketing)",
+    badge: "👑 最優推薦 (奧坎剃刀)",
+    isOptimal: true,
+    k: 2,
+    rmse: 8198.80,
+    r2: 0.947439,
+    features: ["R&D Spend", "Marketing Spend"],
+    intercept: 46346.3388,
+    coefficients: { "R&D Spend": 0.788618, "Marketing Spend": 0.032577 },
+    formula: "Profit = 46,346.34 + 0.7886 × (R&D) + 0.0326 × (Marketing)",
+    insight: "奧坎剃刀黃金組合：兼顧研發與行銷投入，在測試集取得全特徵更優之最小誤差 ($8,198.80) 與最高解釋力 (0.9474)。"
+  },
+  k3: {
+    id: "k3",
+    name: "3 特徵模型 (R&D + Marketing + NY)",
+    badge: "微幅過擬合",
+    k: 3,
+    rmse: 8309.06,
+    r2: 0.946015,
+    features: ["R&D Spend", "Marketing Spend", "State_New York"],
+    intercept: 46100.2913,
+    coefficients: { "R&D Spend": 0.785871, "Marketing Spend": 0.033272, "State_New York": 864.001870 },
+    formula: "Profit = 46,100.29 + 0.7859 × (R&D) + 0.0333 × (Mkt) + 864.00 × (NY)",
+    insight: "納入紐約州虛擬變數後，測試集 RMSE 開始由 8198 反彈至 8309，呈現邊際效益遞減。"
+  },
+  k4: {
+    id: "k4",
+    name: "4 特徵模型 (R&D + Marketing + NY + FL)",
+    badge: "邊際效益遞減",
+    k: 4,
+    rmse: 8409.92,
+    r2: 0.944697,
+    features: ["R&D Spend", "Marketing Spend", "State_New York", "State_Florida"],
+    intercept: 46329.0602,
+    coefficients: { "R&D Spend": 0.785142, "Marketing Spend": 0.033956, "State_New York": 554.657333, "State_Florida": -826.468159 },
+    formula: "Profit = 46,329.06 + 0.7851 × (R&D) + 0.0340 × (Mkt) + 554.66 × (NY) - 826.47 × (FL)",
+    insight: "加入佛羅里達州後測試集表現持續下滑，顯見地區虛擬變數對獲利預測之噪音大於信號。"
+  },
+  k5: {
+    id: "k5",
+    name: "全 5 特徵基準模型 (All Features)",
+    badge: "全特徵基準 (泛化最差)",
+    k: 5,
+    rmse: 9137.99,
+    r2: 0.934707,
+    features: ["R&D Spend", "Administration", "Marketing Spend", "State_Florida", "State_New York"],
+    intercept: 42554.1676,
+    coefficients: {
+      "R&D Spend": 0.773467,
+      "Administration": 0.032885,
+      "Marketing Spend": 0.036610,
+      "State_Florida": -959.284160,
+      "State_New York": 699.369053
+    },
+    formula: "Profit = 42,554.17 + 0.7735 × (R&D) + 0.0329 × (Admin) + 0.0366 × (Mkt) - 959.28 × (FL) + 699.37 × (NY)",
+    insight: "納入行政支出與全州別變數，因多重共線性與低相關噪音拖累，測試集 RMSE 激增至 $9,137.99。"
+  }
+};
+
+const DEFAULT_PRESETS = [
+  { id: "avg", name: "典型平均新創", tag: "50家母體平均值", rd: 74000, mkt: 210000, admin: 121000, state: "California" },
+  { id: "tech", name: "硬科技研發型", tag: "Deep Tech", rd: 160000, mkt: 100000, admin: 110000, state: "New York" },
+  { id: "growth", name: "市場擴張導向", tag: "Growth Marketing", rd: 60000, mkt: 420000, admin: 130000, state: "Florida" },
+  { id: "lean", name: "精實自籌新創", tag: "Lean Bootstrap", rd: 20000, mkt: 15000, admin: 60000, state: "California" }
+];
+
+const DEFAULT_BENCHMARK = {
+  meanProfit: 112012.64,
+  medianProfit: 107978.19,
+  minProfit: 14681.40,
+  maxProfit: 192261.83
+};
+
+function initPredictorModule(models, presets, benchmark) {
+  const predictionModels = models || DEFAULT_PREDICTION_MODELS;
+  const predictionPresets = presets || DEFAULT_PRESETS;
+  const historicalBenchmark = benchmark || DEFAULT_BENCHMARK;
+
   let activeModelKey = "k2"; // 預設使用奧坎剃刀最優 2 特徵模型
 
   // DOM 元素引用
@@ -504,15 +628,9 @@ function initPredictorModule(predictionModels, presets, benchmark) {
   const breakdownList = document.getElementById("pred-breakdown-list");
   const insightText = document.getElementById("pred-insight-text");
 
-  // 1. 渲染情境預設按鈕
-  if (presetContainer && presets) {
-    presetContainer.innerHTML = presets.map((p, idx) => `
-      <button type="button" class="preset-btn ${p.id === 'avg' ? 'active' : ''}" data-preset-id="${p.id}">
-        <span>${p.name}</span>
-        <span style="font-size: 0.68rem; opacity: 0.7;">(${p.tag})</span>
-      </button>
-    `).join('');
-
+  // 1. 綁定情境預設按鈕
+  function attachPresetListeners() {
+    if (!presetContainer) return;
     const presetBtns = presetContainer.querySelectorAll(".preset-btn");
     presetBtns.forEach(btn => {
       btn.addEventListener("click", () => {
@@ -520,7 +638,7 @@ function initPredictorModule(predictionModels, presets, benchmark) {
         btn.classList.add("active");
         
         const presetId = btn.getAttribute("data-preset-id");
-        const selectedPreset = presets.find(p => p.id === presetId);
+        const selectedPreset = predictionPresets.find(p => p.id === presetId);
         if (selectedPreset) {
           applyPresetValues(selectedPreset);
         }
@@ -528,68 +646,87 @@ function initPredictorModule(predictionModels, presets, benchmark) {
     });
   }
 
+  if (presetContainer && predictionPresets) {
+    // 若尚未由 HTML 靜態渲染按鈕，動態補齊
+    if (!presetContainer.children.length) {
+      presetContainer.innerHTML = predictionPresets.map(p => `
+        <button type="button" class="preset-btn ${p.id === 'avg' ? 'active' : ''}" data-preset-id="${p.id}">
+          <span>${p.name}</span>
+          <span style="font-size: 0.68rem; opacity: 0.7;">(${p.tag})</span>
+        </button>
+      `).join('');
+    }
+    attachPresetListeners();
+  }
+
   // 套用情境預設數值
   function applyPresetValues(p) {
-    sliderRd.value = p.rd;
-    numRd.value = p.rd;
-    labelRd.textContent = `$${Number(p.rd).toLocaleString()}`;
+    if (sliderRd && numRd && labelRd) {
+      sliderRd.value = p.rd;
+      numRd.value = p.rd;
+      labelRd.textContent = `$${Number(p.rd).toLocaleString()}`;
+    }
 
-    sliderMkt.value = p.mkt;
-    numMkt.value = p.mkt;
-    labelMkt.textContent = `$${Number(p.mkt).toLocaleString()}`;
+    if (sliderMkt && numMkt && labelMkt) {
+      sliderMkt.value = p.mkt;
+      numMkt.value = p.mkt;
+      labelMkt.textContent = `$${Number(p.mkt).toLocaleString()}`;
+    }
 
-    sliderAdmin.value = p.admin;
-    numAdmin.value = p.admin;
-    labelAdmin.textContent = `$${Number(p.admin).toLocaleString()}`;
+    if (sliderAdmin && numAdmin && labelAdmin) {
+      sliderAdmin.value = p.admin;
+      numAdmin.value = p.admin;
+      labelAdmin.textContent = `$${Number(p.admin).toLocaleString()}`;
+    }
 
-    selectState.value = p.state;
-    labelState.textContent = p.state;
+    if (selectState && labelState) {
+      selectState.value = p.state;
+      labelState.textContent = p.state;
+    }
 
     calculatePrediction();
   }
 
-  // 2. 雙向滑桿與數字框同步綁定
-  function bindSyncInput(slider, num, label, min, max, step) {
+  // 2. 雙向滑桿與數字框同步綁定 (監聽 input 與 change 事件)
+  function bindSyncInput(slider, num, label, min, max) {
+    if (!slider || !num || !label) return;
     const clamp = (val) => Math.min(Math.max(val, min), max);
 
-    slider.addEventListener("input", () => {
-      const val = clamp(parseFloat(slider.value) || 0);
+    const syncFromVal = (raw) => {
+      const parsed = parseFloat(raw);
+      const val = clamp(isNaN(parsed) ? min : parsed);
+      slider.value = val;
       num.value = val;
       label.textContent = `$${Number(val).toLocaleString()}`;
       clearActivePresetHighlight();
       calculatePrediction();
-    });
+    };
 
-    num.addEventListener("input", () => {
-      let raw = parseFloat(num.value);
-      if (isNaN(raw)) raw = min;
-      const val = clamp(raw);
-      slider.value = val;
-      label.textContent = `$${Number(val).toLocaleString()}`;
-      clearActivePresetHighlight();
-      calculatePrediction();
-    });
+    slider.addEventListener("input", () => syncFromVal(slider.value));
+    slider.addEventListener("change", () => syncFromVal(slider.value));
+
+    num.addEventListener("input", () => syncFromVal(num.value));
+    num.addEventListener("change", () => syncFromVal(num.value));
 
     num.addEventListener("blur", () => {
       let raw = parseFloat(num.value);
       if (isNaN(raw) || raw < min) raw = min;
       if (raw > max) raw = max;
-      num.value = raw;
-      slider.value = raw;
-      label.textContent = `$${Number(raw).toLocaleString()}`;
-      calculatePrediction();
+      syncFromVal(raw);
     });
   }
 
-  bindSyncInput(sliderRd, numRd, labelRd, 0, 250000, 5000);
-  bindSyncInput(sliderMkt, numMkt, labelMkt, 0, 500000, 5000);
-  bindSyncInput(sliderAdmin, numAdmin, labelAdmin, 0, 250000, 5000);
+  bindSyncInput(sliderRd, numRd, labelRd, 0, 250000);
+  bindSyncInput(sliderMkt, numMkt, labelMkt, 0, 500000);
+  bindSyncInput(sliderAdmin, numAdmin, labelAdmin, 0, 250000);
 
-  selectState.addEventListener("change", () => {
-    labelState.textContent = selectState.value;
-    clearActivePresetHighlight();
-    calculatePrediction();
-  });
+  if (selectState) {
+    selectState.addEventListener("change", () => {
+      if (labelState) labelState.textContent = selectState.value;
+      clearActivePresetHighlight();
+      calculatePrediction();
+    });
+  }
 
   function clearActivePresetHighlight() {
     if (!presetContainer) return;
@@ -609,7 +746,7 @@ function initPredictorModule(predictionModels, presets, benchmark) {
   });
 
   function updateModelUIState() {
-    const model = predictionModels[activeModelKey];
+    const model = predictionModels[activeModelKey] || predictionModels["k2"] || Object.values(predictionModels)[0];
     if (!model) return;
 
     // 更新模型標籤與評估指標
@@ -661,13 +798,13 @@ function initPredictorModule(predictionModels, presets, benchmark) {
 
   // 4. 即時預測計算引擎
   function calculatePrediction() {
-    const model = predictionModels[activeModelKey];
+    const model = predictionModels[activeModelKey] || predictionModels["k2"] || Object.values(predictionModels)[0];
     if (!model) return;
 
-    const rd = parseFloat(numRd.value) || 0;
-    const mkt = parseFloat(numMkt.value) || 0;
-    const admin = parseFloat(numAdmin.value) || 0;
-    const state = selectState.value;
+    const rd = sliderRd ? (parseFloat(sliderRd.value) || 0) : 0;
+    const mkt = sliderMkt ? (parseFloat(sliderMkt.value) || 0) : 0;
+    const admin = sliderAdmin ? (parseFloat(sliderAdmin.value) || 0) : 0;
+    const state = selectState ? selectState.value : "California";
 
     let predictedProfit = model.intercept;
     const breakdownItems = [
@@ -685,7 +822,7 @@ function initPredictorModule(predictionModels, presets, benchmark) {
       predictedProfit += contrib;
       breakdownItems.push({
         name: "研發支出 (R&D Spend)",
-        desc: `β = ${coef.toFixed(4)} × $${rd.toLocaleString()}`,
+        desc: `β = ${coef.toFixed(4)} × $${Math.round(rd).toLocaleString()}`,
         value: contrib
       });
     }
@@ -697,7 +834,7 @@ function initPredictorModule(predictionModels, presets, benchmark) {
       predictedProfit += contrib;
       breakdownItems.push({
         name: "行銷支出 (Marketing Spend)",
-        desc: `β = ${coef.toFixed(4)} × $${mkt.toLocaleString()}`,
+        desc: `β = ${coef.toFixed(4)} × $${Math.round(mkt).toLocaleString()}`,
         value: contrib
       });
     }
@@ -709,7 +846,7 @@ function initPredictorModule(predictionModels, presets, benchmark) {
       predictedProfit += contrib;
       breakdownItems.push({
         name: "行政支出 (Administration)",
-        desc: `β = ${coef.toFixed(4)} × $${admin.toLocaleString()}`,
+        desc: `β = ${coef.toFixed(4)} × $${Math.round(admin).toLocaleString()}`,
         value: contrib
       });
     }
@@ -740,17 +877,18 @@ function initPredictorModule(predictionModels, presets, benchmark) {
       });
     }
 
-    // 渲染預測金額 (微動畫或高亮)
+    // 渲染預測金額 (強韌展示)
     if (profitValueEl) {
       profitValueEl.textContent = predictedProfit.toLocaleString(undefined, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
+      profitValueEl.style.display = "inline-block";
     }
 
     // 基準均值百分比比較
-    if (benchmark && benchmarkPill && benchmarkIcon && benchmarkPct) {
-      const mean = benchmark.meanProfit; // 112012.64
+    if (historicalBenchmark && benchmarkPill && benchmarkIcon && benchmarkPct) {
+      const mean = historicalBenchmark.meanProfit || 112012.64;
       const diff = predictedProfit - mean;
       const diffPct = (diff / mean) * 100;
 
